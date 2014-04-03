@@ -7,7 +7,7 @@ $(document).ready(function(){
 	{
 		var submitArray = new Array();
 		headings.each(function( index ){
-			submitArray.push($(this).text());
+			submitArray.push( [ $(this).text(), $(this).attr("href") ]);
 		})
 		
 		self.postMessage(submitArray);

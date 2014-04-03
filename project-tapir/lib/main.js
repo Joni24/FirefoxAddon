@@ -17,17 +17,17 @@ var maxHeadlines = prefsAccess.prefs['maxHeadlines'];
 
 
 var iconState = true;
-var reloadTime = 600000; // 600000 = 10min
-//var url = "https://dl.dropboxusercontent.com/u/2441646/myTestPage.html";
-var url = "http://www.allgamesbeta.com/";
+var reloadTime = 10000; // 600000 = 10min
+var url = "https://dl.dropboxusercontent.com/u/2441646/myTestPage.html";
+//var url = "http://www.allgamesbeta.com/";
 
 // create the persistent unreadHeadlines array at first start
 if (!simpleStorage.storage.unreadHeadlines)
 	simpleStorage.storage.unreadHeadlines = [];
   
-simpleStorage.storage.unreadHeadlines.push("1"); 
-simpleStorage.storage.unreadHeadlines.push("2"); 
-simpleStorage.storage.unreadHeadlines.push("3");
+// simpleStorage.storage.unreadHeadlines.push("1"); 
+// simpleStorage.storage.unreadHeadlines.push("2"); 
+// simpleStorage.storage.unreadHeadlines.push("3");
 // simpleStorage.storage.unreadHeadlines.push(maxHeadlines); 
   
 // if (simpleStorage.storage.notFirstRun == null)
@@ -56,8 +56,9 @@ var headlinesPanel = panels.Panel({
 //////////////////////////////////////////////// my classes ////////////////////////////////////////////////
 
 // Results, contains 
-function Result(){
-	this.url = "bla";
+function Headline(text, url){
+	this.text = text;
+	this.url = url;
 }
 
 //////////////////////////////////////////////// my functions ///////////////////////////////////////////////

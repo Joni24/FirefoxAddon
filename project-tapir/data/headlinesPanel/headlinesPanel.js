@@ -7,7 +7,7 @@ self.on("message", function onMessage(unreadHeadlines) {
 	unreadHeadlines.forEach( function(headline) {
 		var headlineHtml = $('#template .headline').clone();
 		//headlineHtml.find(".headline-text").text(headline);
-		headlineHtml.find(".url").text(headline);
+		headlineHtml.find(".url").text("\u2022 "+headline);
 		headlineHtml.find(".url").attr("href", "http://www.allgamesbeta.com/");
 		headlineHtml.find(".url").bind("click", function(event){
 			event.stopPropagation();
