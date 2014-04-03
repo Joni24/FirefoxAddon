@@ -1,7 +1,7 @@
 // traverse the dom and find the desired h tags, uses the jquery library
 
 $(document).ready(function(){
-	headings = $("h2");
+	headings = $("h3 a");
 	
 	if(headings.length != 0)
 	{
@@ -10,13 +10,8 @@ $(document).ready(function(){
 			submitArray.push($(this).text());
 		})
 		
-		
-		// for (var i in headings) {
-			// submitArray.push(headings[i].text().toString());
-		// }
-		
 		self.postMessage(submitArray);
 	}
 	else
-		self.postMessage("keine h3s gefunden! :(");
+		 self.postMessage("");
 });

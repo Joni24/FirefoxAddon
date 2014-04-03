@@ -5,5 +5,22 @@
   "description": "a basic add-on",
   "author": "",
   "license": "MPL 2.0",
-  "version": "0.1"
+  "version": "0.1",
+  
+  "preferences": [{
+	"description": "Number of Headlines to show",
+	"type": "integer",
+	"name": "maxHeadlines",
+	"value": 10,
+	"title": "Headlines number",
+	"hidden": true
+  }, 
+  {
+	"description": "Refresh time",
+	"type": "integer",
+	"name": "reloadTime",
+	"value": 10000,
+	"title": "update interval in ms",
+	"hidden": true
+  }]
 }
