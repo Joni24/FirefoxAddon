@@ -18,8 +18,8 @@ var maxHeadlines = prefsAccess.prefs['maxHeadlines'];
 
 var iconState = true;
 var reloadTime = 10000; // 600000 = 10min
-var url = "https://dl.dropboxusercontent.com/u/2441646/myTestPage.html";
-//var url = "http://www.allgamesbeta.com/";
+//var url = "https://dl.dropboxusercontent.com/u/2441646/myTestPage.html";
+var url = "http://www.allgamesbeta.com/";
 
 // create the persistent unreadHeadlines array at first start
 if (!simpleStorage.storage.unreadHeadlines)
@@ -29,12 +29,9 @@ if (!simpleStorage.storage.unreadHeadlines)
 // simpleStorage.storage.unreadHeadlines.push("2"); 
 // simpleStorage.storage.unreadHeadlines.push("3");
 // simpleStorage.storage.unreadHeadlines.push(maxHeadlines); 
-  
-// if (simpleStorage.storage.notFirstRun == null)
-	// simpleStorage.storage.notFirstRun = false;
 	
 if (!simpleStorage.storage.lastHeadline)
-	simpleStorage.storage.lastHeadline = null;
+	simpleStorage.storage.lastHeadline = new Headline( ["Mario Kart 8 New Courses & Items Trailer & Screens", "http://www.allgamesbeta.com/2014/04/mario-kart-8-new-courses-items-trailer.html"] );
 	
 // Panel wich shows the new headlines
 var headlinesPanel = panels.Panel({
@@ -48,17 +45,31 @@ var headlinesPanel = panels.Panel({
 		// send the headlines to the content script to display them
 		this.postMessage(simpleStorage.storage.unreadHeadlines);
 	},
-	onMessage: function(message){
-		tabs.open(message);
+	onMessage: function(headline){
+		// open url in new tab
+		tabs.open(headline.url);
+		// delete from unreadHeadlines array
+		// find index
+		var findIndex = function(headline){
+			for(var i=0; i < simpleStorage.storage.unreadHeadlines.length; i++) {
+				if(simpleStorage.storage.unreadHeadlines[i].url == headline.url) {
+					return i;
+				}
+			};
+			return -1;
+		};
+		var index = findIndex(headline);
+		console.log("delete :"+headline.text+" index: "+index);
+		simpleStorage.storage.unreadHeadlines.splice(index, 1);
 	}
 });
 
 //////////////////////////////////////////////// my classes ////////////////////////////////////////////////
 
 // Results, contains 
-function Headline(text, url){
-	this.text = text;
-	this.url = url;
+function Headline(data){
+	this.text = data[0];
+	this.url = data[1];
 }
 
 //////////////////////////////////////////////// my functions ///////////////////////////////////////////////
@@ -97,21 +108,22 @@ function update(){
 
 // check if the first headline (the highest in the html file) is already cached
 function checkForNewHeadlines(headlineCandidates){
-	console.log("currentH: "+simpleStorage.storage.lastHeadline+"->   new candidate: "+ headlineCandidates[0]);
+
+	//console.log("currentH: "+simpleStorage.storage.lastHeadline+"->   new candidate: "+ headlineCandidates[0]);
 	
 	if(simpleStorage.storage.lastHeadline == null)
 	{
 		// just save the newest Headline
-		simpleStorage.storage.lastHeadline = headlineCandidates[0];
+		simpleStorage.storage.lastHeadline = new Headline(headlineCandidates[0]);
 	}
 	else{
 		
 		for (var i=0; i < headlineCandidates.length; i++)
 		{
-			if( headlineCandidates[i] != simpleStorage.storage.lastHeadline )
+			if( headlineCandidates[i][0] != simpleStorage.storage.lastHeadline.text )
 			{
 				// add headlines at front of the array
-				simpleStorage.storage.unreadHeadlines.splice(i, 0, headlineCandidates[i]);
+				simpleStorage.storage.unreadHeadlines.splice(i, 0, new Headline(headlineCandidates[i]));
 			}
 			else
 			{
@@ -122,34 +134,11 @@ function checkForNewHeadlines(headlineCandidates){
 		
 		if(simpleStorage.storage.unreadHeadlines != null)
 		{
-			simpleStorage.storage.lastHeadline = headlineCandidates[0];
+			simpleStorage.storage.lastHeadline = new Headline(headlineCandidates[0]);
 		}
 	}
 	
-	
-	// else if(simpleStorage.storage.lastHeadline != headlineCandidates[0])
-	// {	
-		// // 
-		// var tmpLastHeadline = simpleStorage.storage.lastHeadline;
-		// var tmpUnreadHeadlines = simpleStorage.storage.unreadHeadlines;
-		
-		// //delete simpleStorage.storage.unreadHeadlines;
-		// simpleStorage.storage.unreadHeadlines = [];
-		
-		// for (var i=0; i < headlineCandidates.length; i++)
-		// {
-			// if(headlineCandidates[i] == tmpLastHeadline || i > maxHeadlines)
-				// break;
-			// else
-			// {
-				// simpleStorage.storage.unreadHeadlines.push(headlineCandidates[i]);
-			// }
-		// }
-		
-		// simpleStorage.storage.lastHeadline = headlineCandidates[0];
-	// }
-	
-	console.log("Unread Headlines: "+simpleStorage.storage.unreadHeadlines);
+	console.log("Unread Headlines: "+simpleStorage.storage.unreadHeadlines.toString());
 }
 
 

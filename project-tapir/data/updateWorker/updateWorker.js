@@ -5,7 +5,7 @@ $(document).ready(function(){
 	
 	if(headings.length != 0)
 	{
-		var submitArray = new Array();
+		var submitArray = [];
 		headings.each(function( index ){
 			submitArray.push( [ $(this).text(), $(this).attr("href") ]);
 		})
