@@ -16,14 +16,15 @@ if(prefsAccess.prefs['maxHeadlines'] >= 100)
 var maxHeadlines = prefsAccess.prefs['maxHeadlines'];
 
 
-var iconState = true;
 var reloadTime = 10000; // 600000 = 10min
 //var url = "https://dl.dropboxusercontent.com/u/2441646/myTestPage.html";
 var url = "http://www.allgamesbeta.com/";
 
+
 // create the persistent unreadHeadlines array at first start
 if (!simpleStorage.storage.unreadHeadlines)
 	simpleStorage.storage.unreadHeadlines = [];
+
   
 // simpleStorage.storage.unreadHeadlines.push("1"); 
 // simpleStorage.storage.unreadHeadlines.push("2"); 
@@ -59,8 +60,13 @@ var headlinesPanel = panels.Panel({
 			return -1;
 		};
 		var index = findIndex(headline);
-		console.log("delete :"+headline.text+" index: "+index);
-		simpleStorage.storage.unreadHeadlines.splice(index, 1);
+		if(index != -1)
+		{
+			console.log("delete :"+headline.text+" index: "+index);
+			delete simpleStorage.storage.unreadHeadlines[index];
+			simpleStorage.storage.unreadHeadlines.splice(index, 1);
+			toggleImage();
+		}
 	}
 });
 
@@ -75,11 +81,13 @@ function Headline(data){
 //////////////////////////////////////////////// my functions ///////////////////////////////////////////////
 
 // changes the widget icon, responding to the number of new entrys
-function bla(){
-	iconState = !iconState;
-	widget.contentURL = iconState ?
-              data.url('widget/icon_1.png') :
-              data.url('widget/icon_2.png');
+function toggleImage(){
+	if(simpleStorage.storage.unreadHeadlines == null || simpleStorage.storage.unreadHeadlines.length == 0 )
+		widget.contentURL = data.url('widget/icon_normal.png');
+	else if(simpleStorage.storage.unreadHeadlines.length > 9)
+		widget.contentURL = data.url('widget/icon_many.png');
+	else
+		widget.contentURL = data.url("widget/icon_"+simpleStorage.storage.unreadHeadlines.length+".png");
 };
 
 
@@ -139,6 +147,7 @@ function checkForNewHeadlines(headlineCandidates){
 	}
 	
 	console.log("Unread Headlines: "+simpleStorage.storage.unreadHeadlines.toString());
+	toggleImage();
 }
 
 
@@ -161,14 +170,14 @@ widget.port.on('left-click', function() {
 
 widget.port.on('right-click', function() {
 	console.log('right click');
-	bla();
+	toggleImage();
 });
 
 // set a timer, after the desired ms the function 
 timer.setInterval(update, reloadTime);
 // get an update now
 update();
-
+toggleImage();
 
 
 
