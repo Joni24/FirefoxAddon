@@ -10,11 +10,11 @@
   
   "preferences": [
   {
-	"description": "for example http://www.allgamesbeta.com/",
+	"description": "Auf richtige Url eingabe achten, z.B. http://www.allgamesbeta.com/",
 	"type": "string",
 	"name": "url",
 	"value": "http://www.allgamesbeta.com/",
-	"title": "Url to check"
+	"title": "Url die periodisch auf updates geprüft werden soll:"
   }, 
   
   {
@@ -27,11 +27,10 @@
   }, 
   
   {
-	"description": "Refresh time",
+	"description": "z.B. 600000ms == 10min, 10000ms == 10s",
 	"type": "integer",
 	"name": "reloadTime",
 	"value": 10000,
-	"title": "update interval in ms",
-	"hidden": true
+	"title": "Update intervall in ms:"
   }]
 }

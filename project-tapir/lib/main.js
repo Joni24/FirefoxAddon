@@ -15,24 +15,25 @@ if(prefsAccess.prefs['maxHeadlines'] >= 100)
 	
 var maxHeadlines = prefsAccess.prefs['maxHeadlines'];
 
+// id to access the timer
+var timerID;
+var reloadTime = prefsAccess.prefs['reloadTime']; // 600000 = 10min
+// add a listener to this preference
+prefsAccess.on("reloadTime", onReloadTimeChange);
 
-var reloadTime = 10000; // 600000 = 10min
+
 //var url = "https://dl.dropboxusercontent.com/u/2441646/myTestPage.html";
-var url = "http://www.allgamesbeta.com/";
+// add a listener to this preference
+prefsAccess.on("url", onURLChange);
 
 
 // create the persistent unreadHeadlines array at first start
 if (!simpleStorage.storage.unreadHeadlines)
 	simpleStorage.storage.unreadHeadlines = [];
 
-  
-// simpleStorage.storage.unreadHeadlines.push("1"); 
-// simpleStorage.storage.unreadHeadlines.push("2"); 
-// simpleStorage.storage.unreadHeadlines.push("3");
-// simpleStorage.storage.unreadHeadlines.push(maxHeadlines); 
 	
 if (!simpleStorage.storage.lastHeadline)
-	simpleStorage.storage.lastHeadline = new Headline( ["Mario Kart 8 New Courses & Items Trailer & Screens", "http://www.allgamesbeta.com/2014/04/mario-kart-8-new-courses-items-trailer.html"] );
+	simpleStorage.storage.lastHeadline = null;//new Headline( ["Mario Kart 8 New Courses & Items Trailer & Screens", "http://www.allgamesbeta.com/2014/04/mario-kart-8-new-courses-items-trailer.html"] );
 	
 // Panel wich shows the new headlines
 var headlinesPanel = panels.Panel({
@@ -107,6 +108,24 @@ function deleteAllUnread(){
 	toggleImage();
 }
 
+// if the user changes the reloadTime
+function onReloadTimeChange(prefName) {
+	reloadTime = prefsAccess.prefs['reloadTime'];
+    //console.log("Time change to " + reloadTime);
+	// clear the timer, and add a new one
+	timer.clearInterval(timerID);
+	timerID = timer.setInterval(update, reloadTime);
+}
+
+function onURLChange(prefName) {
+	console.log("changed to url: " +prefsAccess.prefs['url']);
+	// reset unread headlines and lastHeadline
+	simpleStorage.storage.lastHeadline = null;
+	deleteAllUnread();
+	update();
+}
+
+
 // in this function a new page-worker is build, the pageWorker checks the url, and get destroyed after finishing
 function update(){
 	console.log("-> update "+ new Date());
@@ -115,7 +134,7 @@ function update(){
 		contentScriptWhen: 'ready',
 		contentScriptFile: [data.url('jquery-1.11.0.js'),
 							data.url('updateWorker/updateWorker.js')],
-		contentURL: url,
+		contentURL: prefsAccess.prefs['url'],
 		onMessage: function(message) {
 			if(message != "")
 			{
@@ -180,17 +199,16 @@ var widget = widgets.Widget({
 
 // listens for right- and left mouse click messages
 widget.port.on('left-click', function() {
-    //console.log('left click');
-	headlinesPanel.show();
+	headlinesPanel.show
 });
 
 widget.port.on('right-click', function() {
-	//console.log('right click');
-	toggleImage();
+	// open url which is to scan
+	tabs.open(prefsAccess.prefs['url']);
 });
 
 // set a timer, after the desired ms the function 
-timer.setInterval(update, reloadTime);
+timerID = timer.setInterval(update, reloadTime);
 // get an update now
 update();
 toggleImage();
