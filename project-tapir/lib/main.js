@@ -46,9 +46,20 @@ var headlinesPanel = panels.Panel({
 		// send the headlines to the content script to display them
 		this.postMessage(simpleStorage.storage.unreadHeadlines);
 	},
-	onMessage: function(headline){
-		// open url in new tab
-		tabs.open(headline.url);
+	onMessage: function(message){ //message[0] = Headline-Object, message[1] = showInNewTab-boolean, message[2] = deleteAll- boolean
+		// delete the whole array
+		if(message[2])
+		{
+			deleteAllUnread();
+			return;
+		}
+	
+		var headline = message[0];
+	
+		// open url in new tab if not rightclicked
+		if(message[1])
+			tabs.open(headline.url);
+			
 		// delete from unreadHeadlines array
 		// find index
 		var findIndex = function(headline){
@@ -90,6 +101,11 @@ function toggleImage(){
 		widget.contentURL = data.url("widget/icon_"+simpleStorage.storage.unreadHeadlines.length+".png");
 };
 
+function deleteAllUnread(){
+	delete simpleStorage.storage.unreadHeadlines;
+	simpleStorage.storage.unreadHeadlines = [];
+	toggleImage();
+}
 
 // in this function a new page-worker is build, the pageWorker checks the url, and get destroyed after finishing
 function update(){
@@ -164,12 +180,12 @@ var widget = widgets.Widget({
 
 // listens for right- and left mouse click messages
 widget.port.on('left-click', function() {
-    console.log('left click');
+    //console.log('left click');
 	headlinesPanel.show();
 });
 
 widget.port.on('right-click', function() {
-	console.log('right click');
+	//console.log('right click');
 	toggleImage();
 });
 

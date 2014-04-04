@@ -1,13 +1,23 @@
 {
   "name": "project-tapir",
-  "title": "project-tapir",
+  "title": "Project-Tapir",
   "id": "jid1-HQWxGKP9z7rHUQ",
-  "description": "a basic add-on",
-  "author": "",
+  "description": "Überprüft periodisch ob es Webseiten Updates gibt.",
+  "author": "Jonathan Hoschkara",
   "license": "MPL 2.0",
-  "version": "0.1",
+  "version": "1.0",
+  "icon": "project_tapir_icon.png",
   
-  "preferences": [{
+  "preferences": [
+  {
+	"description": "for example http://www.allgamesbeta.com/",
+	"type": "string",
+	"name": "url",
+	"value": "http://www.allgamesbeta.com/",
+	"title": "Url to check"
+  }, 
+  
+  {
 	"description": "Number of Headlines to show",
 	"type": "integer",
 	"name": "maxHeadlines",
@@ -15,6 +25,7 @@
 	"title": "Headlines number",
 	"hidden": true
   }, 
+  
   {
 	"description": "Refresh time",
 	"type": "integer",
