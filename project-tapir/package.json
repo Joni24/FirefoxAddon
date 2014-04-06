@@ -5,8 +5,9 @@
   "description": "Überprüft periodisch ob es Webseiten Updates gibt.",
   "author": "Jonathan Hoschkara",
   "license": "MPL 2.0",
-  "version": "1.0",
+  "version": "1.1",
   "icon": "project_tapir_icon.png",
+  "permissions": {"private-browsing": true},
   
   "preferences": [
   {
